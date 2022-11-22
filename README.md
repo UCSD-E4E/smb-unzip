@@ -1,30 +1,56 @@
-# python-repo-example
-Example Python Package Repository.  This repository serves as an example of how to set up a Python repository for UCSD Engineers for Exploration.
+# smb-unzip
+This package provides a way to easily download and unzip a `.zip` file into the specified directory
 
-## .vscode
-This folder should contain at least a `launch.json` file that provides entry points into the package.  This could be entry points to example programs, typical debug entry points, etc.  Ideally, this will also contain a `settings.json` with folder specific VS Code settings.
+# Example Usage
 
-## Python Packages
-Almost all code should be organized into packages.  This facilitates easy code reuse.  See https://packaging.python.org/en/latest/ for more information on how to use packages in Python.
+```
+from pathlib import Path
 
-## tests
-Tests should ideally be kept in an isolated folder.  This example uses `pytest`, see https://docs.pytest.org/en/7.0.x/ for information on how to use `pytest`.
+from smb_unzip.smb_unzip import smb_unzip
 
-## .gitignore
-This is an important file to put into your `git` repositories.  This helps prevent `git` from including unnecessary files into the version control system, such as generated files, environment files, or log files.
+smb_unzip(
+    network_path='smb://example.com/share/path/file.zip',
+    output_path=Path('.'),
+    username='username',
+    password='password',
+)
+```
 
-## Jupyter Notebooks
-Jupyter Notebooks are a great way to add interactive reports or documentation.  There is an example here.
+For the above example, if file.zip contained the following structure:
+```
+file.zip
+  > folderA
+    - file1
+    - file2
+  - file3
+```
 
-## *.code-workspace
-This is created by going to `File`->`Save Workspace As` in VS Code.  This allows us to easily open the same development environment across computers and operating systems.  Use this as the root of your development environment.
+Then we would have the resulting structure:
+```
+.
+> folderA
+  - file1
+  - file2
+- file3
+```
 
-You'll also notice here that there are some recommended extensions.  This allows everyone on your team to have a consistent toolchain for how to interact with your code.  See https://code.visualstudio.com/docs/editor/extension-marketplace#_workspace-recommended-extensions for instructions for how to configure these.
-
-## README.md
-This is a critical file to include.  This should be an introduction to your repository.  It should be a birds-eye view of what your repo is and how to use it, with links to the appropriate lower-level documentation.
-
-## setup.py
-This is the original way to package Python projects, which we probably still prefer.  However, in general, if you can, you should probably start using the newer packaging tools (`pyproject.toml`)
-
-See https://packaging.python.org/en/latest/tutorials/packaging-projects/ and https://docs.python.org/3/distutils/setupscript.html for more information about each tool.
+## Developers
+This package should be developed using VS Code.
+1. Clone this repository
+2. Open `smb-unzip.code-workspace` with VS Code.
+3. Create a python virtual environment for this project (we suggest `venv`, so do `python3 -m venv .venv` and select that environment for this project)
+4. Install this package as editable (`python -m pip install -e .`)
+5. Enable linting and testing (`python -m pip install pylint pytest`)
+6. Configure your test parameters
+    1. Create `${workspaceFolder}/smb_test_creds.json`
+    2. Put the following information into `${workspaceFolder}/smb_test_creds.json`:
+    ```
+    {
+        "url": "smb://example.com/share/path/file.zip",
+        "username": "username",
+        "password": "password",
+        "verify": [
+            "folder/file"
+        ]
+    }
+    ```
